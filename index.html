@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="menu">
+			<h3 id="answer"></h3>
+			<div class="listtitle">Control:</div>
+			<div class="app_buttons">
+				<button type="button" class="diceroll icon w-100" id="rollall">
+					<span></span> <small class="small">Roll All!</small>
+				</button>
+				<div class="small addlist">
+					<button class="add icon" data-sides="4"><span></span> 4d</button>
+					<button class="add icon" data-sides="6"><span></span> 6d</button>
+					<button class="add icon" data-sides="8"><span></span> 8D</button>
+					<button class="add icon" data-sides="10"><span></span> 10D</button>
+					<button class="add icon" data-sides="12"><span></span> 12D</button>
+					<button class="add icon" data-sides="20"><span></span> 20D</button>
+				</div>
+			</div>
+			<div class="dicelist">
+				<div class="listtitle">
+					Show All
+					<label class="switch">
+						<input type="checkbox" id="toggle-all" checked="checked">
+						<span class="slider round"></span>
+					</label>
+				</div>
+				<ul id="alphabetical"></ul>
+				<div class="listtitle">
+					Show By Type
+					<label class="switch">
+						<input type="checkbox" id="toggle-type">
+						<span class="slider round"></span>
+					</label>
+				</div>
+				<div class="type" id="type4d">
+					<div class="typeheader">
+						<h4>4D</h4>
+						<button class="add icon" data-sides="4"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+				<div class="type" id="type6d">
+					<div class="typeheader">
+						<h4>6D</h4>
+						<button class="add icon" data-sides="6"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+				<div class="type" id="type8d">
+					<div class="typeheader">
+						<h4>8D</h4>
+						<button class="add icon" data-sides="8"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+				<div class="type" id="type10d">
+					<div class="typeheader">
+						<h4>10D</h4>
+						<button class="add icon" data-sides="10"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+				<div class="type" id="type12d">
+					<div class="typeheader">
+						<h4>12D</h4>
+						<button class="add icon" data-sides="12"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+				<div class="type" id="type20d">
+					<div class="typeheader">
+						<h4>20D</h4>
+						<button class="add icon" data-sides="20"><span></span></button>
+					</div>
+					<ul class="list">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="playfield">
+			<div id="dice" class="dice-container">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="alt_script.js"></script>
+</body>
+</html>
