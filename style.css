@@ -29,7 +29,6 @@ body {
         height: 0;
     }
 
-/* The slider */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -43,43 +42,28 @@ body {
 }
 
     .slider:before {
-        position: absolute;
+        top:-10px;
         content: "";
         height: 26px;
         width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: #3F4351;
-        background-image: url("scroll1.png"), linear-gradient(-45deg, #3F4351, #384758);
-        background-size: contain;
-        background-position: right;
-        background-repeat: no-repeat;
         -webkit-transition: .4s;
         transition: .4s;
     }
 
 input:checked + .slider {
-    background-color: rgba(189,168,154,.75);
+    background-color: rgba(189,168,154,.15);
+    box-shadow: 0 0 2px #f2e5da inset;
 }
 
-input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+input:hover + .slider {
+    box-shadow: 0 0 1px #f2e5da;
 }
 
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
-    transform: translateX(26px) rotate(180deg);
+    transform: translateX(26px);
 }
-
-/* Rounded sliders */
-.slider.round {
-    border-radius: 34px;
-}
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
 
 body, .playfield, .menu {
     margin: 0;
@@ -134,7 +118,7 @@ li {
     background: radial-gradient( circle farthest-corner at center center, rgba(40,50,67,.6), rgba(25,41,46,0.35) ) no-repeat;
 }
 
-button {
+button, .slider:before {
     background-color: #3F4351;
     box-shadow: 2px 1px 1px 0 rgb(0 0 0 / 25%), -1px -1px 1px 0 rgb(200 200 200 / 20%), 0px 0px 8px 2px rgb(0 0 0 / 60%) inset;
     background: linear-gradient(135deg, rgba(0,0,0,0.22), rgba(200,200,200,0.25)),rgba(70, 94, 113, 0.65);
@@ -178,6 +162,16 @@ button {
     }
 }
 
+@keyframes activebuttonanimation {
+    from {
+        transform: rotate(90deg) scale(1);
+    }
+
+    to {
+        transform: rotate(90deg) scale(1.5);
+    }
+}
+
 @keyframes diebuttonanimation {
     from {
         transform: skew(-30deg) rotate(-180deg);
@@ -191,6 +185,7 @@ button {
 button span {
     display: inline-block;
     color: #2e3240;
+    transition: transform 1s;
 }
 
 button.icon.diceroll span::before {
@@ -201,11 +196,19 @@ button.icon.hold span::before {
     content: "=";
 }
 
-button.icon.active span, button.icon.active:hover span {
+button.icon.active span {
     transform: rotate(90deg);
-    color: #f2e5da;
-    text-shadow: 0 0 3px darkorange;
+    text-shadow: 0 0 3px #f2e5da, 0 0 5px #b8e1b8;
 }
+
+button.icon.active:hover span {
+    text-shadow: 0 0 3px #f2e5da, 0 0 5px #b8e1b8;
+    animation-duration: 1s;
+    animation-name: activebuttonanimation;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
 
 button.icon.add span::before {
     content: "+";
@@ -215,13 +218,19 @@ button.icon.remove span::before {
     content: "-";
 }
 
-button.icon:hover span {
-    animation-duration: 1s;
-    animation-name: buttonanimation;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+button.icon:hover, button.icon:hover small {
     text-shadow: 0 0 3px #b8e1b8, 0 0 5px #f2e5da;
+    transition: all 2s;
 }
+
+    button.icon:hover span {
+        animation-duration: 1s;
+        animation-name: buttonanimation;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        text-shadow: 0 0 3px #b8e1b8, 0 0 5px #f2e5da;
+        transition: text-shadow 2s;
+    }
 
 button.icon.diceroll:hover span {
     animation-duration: 3s;
@@ -290,19 +299,6 @@ button, a {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
         }
-/*    .dietop:before {
-        content: attr(data-face);
-        position: absolute;
-        top: 0;
-        color: silver;
-        font-size: 3rem;
-        text-align: center;
-        width: 80%;
-        height: 50%;
-        line-height: 4rem;
-        text-align: right;
-        padding: 3rem;
-    }*/
 
 .die {
     width: 100px;
@@ -401,9 +397,6 @@ button, a {
 .die[data-sides="4"][data-face="4"] {
     transform: rotateX(267deg) rotateY(177deg);
 }
-
-
-
 /*six sided*/
 .die[data-sides="6"] {
     /*position: relative;*/
@@ -416,7 +409,6 @@ button, a {
         width: 100px;
         /*background-color: rgba(70, 94, 113, 0.75);*/
     }
-
         /*        .die[data-sides="6"] .side:before {
             width: 100px;
         }*/
@@ -547,7 +539,6 @@ button, a {
 .die[data-sides="8"][data-face="8"] {
     transform: rotateX(129deg) rotateY(273deg) rotateZ(335deg);
 }
-
 /*10 sided*/
 .die[data-sides="10"] .side {
     width: 80px;
@@ -634,8 +625,6 @@ button, a {
 .die[data-sides="10"] .side:nth-child(10) {
     transform: rotateY(360deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
 }
-
-
 /*12 sided*/
 
 .die[data-sides="12"] {
@@ -761,7 +750,6 @@ button, a {
     .die[data-sides='12'] .side:nth-child(12) {
         transform: rotateX(61deg) translateY(0px) rotateY(180deg) rotateX(var(--co-dihedral)) translateZ(var(--extrude));
     }
-
 /*20 sided*/
 .die[data-sides="20"] {
     flex-grow: 1;
