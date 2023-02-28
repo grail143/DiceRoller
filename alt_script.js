@@ -21,13 +21,12 @@ class DiceArrayController {
     remove(index) {
         const undieIndex = this.diceList.findIndex(die => die.index === index);
         if (undieIndex === -1) {
-            return; // Die with specified index was not found
+            return;
         }
         const undie = this.diceList[undieIndex];
-        undie.removeDieFromLists(); // remove from list
-        undie.removeDieFromContainer(); // remove from container
-        this.diceList.splice(undieIndex, 1); // remove from array
-        // update indexes of remaining dice
+        undie.removeDieFromLists();
+        undie.removeDieFromContainer();
+        this.diceList.splice(undieIndex, 1);
         for (let i = undieIndex; i < this.diceList.length; i++) {
             this.diceList[i].index = i + 1;
         }
@@ -109,10 +108,21 @@ class DiceController {
         const rollButton = this.dieTop.querySelector('.icon.diceroll');
         dieElement.classList.add("rolling");
         rollButton.classList.add("active");
+        const dicelistcontainer = document.querySelector('.dicelist');
+        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
+        dicelist.forEach((li) => {
+
+            let liButton = li.querySelector('.icon.diceroll');
+            liButton.classList.add("active");
+        });
         setTimeout(() => {
             this.value = Math.floor(Math.random() * this.sides) + 1;
             dieElement.classList.remove("rolling");
             rollButton.classList.remove("active");
+            dicelist.forEach((li) => {
+                let liButton = li.querySelector('.icon.diceroll');
+                liButton.classList.remove("active");
+            });
             this.updateDataSets();
         }, 3000);
         return this.value;

@@ -1,6 +1,7 @@
 ﻿* {
     font-family: 'MedievalSharp', serif;
     color: #f2e5da;
+    text-shadow: 0px 1px 0px rgba(200,200,200,.3), 0px -1px 0px rgba(0,0,0,.7);
 }
 
 body {
@@ -109,11 +110,14 @@ body, .playfield, .menu {
 
 .w-100 {
     width: 100%;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 button small {
-    font-size: .75rem;
+    font-size: 1rem;
     vertical-align: bottom;
+    color: #2e3240;
 }
 
 ul {
@@ -127,33 +131,28 @@ li {
     align-items: center;
 }
 
-.app_buttons {
+.app_buttons, .dicelist {
+    background: radial-gradient( circle farthest-corner at center center, rgba(40,50,67,.6), rgba(25,41,46,0.35) ) no-repeat;
 }
 
 button {
-    box-shadow: 0 3px 0 0 #1e1f26, 0 4px 4px -1px rgb(0 0 0 / 60%), 0 4px 6px 1px rgb(0 0 0 / 30%), 0 1px 2px 1px rgb(0 0 0 / 0%) inset, 0 18px 32px -2px rgb(255 255 255 / 10%) inset;
     background-color: #3F4351;
-    background-image: url("scroll1.png"), linear-gradient(-45deg, #3F4351, #384758),linear-gradient(#000,#888);
-    background-size: contain;
-    background-position: right;
-    background-repeat: no-repeat;
-    color: #E6EAEF;
+    box-shadow: 2px 1px 1px 0 rgb(0 0 0 / 25%), -1px -1px 1px 0 rgb(200 200 200 / 20%), 0px 0px 8px 2px rgb(0 0 0 / 60%) inset;
+    background: linear-gradient(135deg, rgba(0,0,0,0.22), rgba(200,200,200,0.25)),rgba(70, 94, 113, 0.65);
+    color: #1f2139;
     display: inline-block;
-    margin: 0 2px;
+    margin: 0 5px;
     font-size: 2rem;
     line-height: 2.25rem;
-    padding: 0 20px 0 10px;
-    font-weight: normal;
-    border-width: 0;
-    border-style: solid;
-    border-radius: 0.15em 1.25em 1.25em 0.15em;
-    cursor: pointer;
+    padding: 0 10px;
+    font-weight: 800;
+    border: 1px solid;
+    border-radius: 6px 5px;
     user-select: none;
     vertical-align: bottom;
     transition: box-shadow 0.2s, transform 0.2s, color 0.2s;
-    box-shadow: 0px 1px 4px -2px #333;
     position: relative;
-    text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
+    box-sizing: border-box;
 }
 
     button:after {
@@ -163,26 +162,36 @@ button {
         left: 0;
         width: calc(100% - 4px);
         height: 50%;
-        background: linear-gradient(rgba(255,255,255,0.8), rgba(150,150,150,0.2), rgba(0,0,0,0), rgba(150,150,150,0.2));
         border-radius: 0.15em 1.25em 1.25em 0.15em;
     }
 
     button:hover {
-        box-shadow: 0 3px 0 0 #1e1f26, 0 6px 4px -1px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 50%), 0 1px 2px 1px rgb(0 0 0 / 0%) inset, 0 18px 32px -2px rgb(255 255 255 / 14%) inset;
+        box-shadow: 0 3px 0 0 #1e1f26, 0 6px 4px -1px rgb(0 0 0 / 30%), 0 4px 16px rgb(0 0 0 / 50%), 0 1px 2px 1px rgb(0 0 0 / 0%) inset, 0 18px 32px -2px rgb(200 200 200 / 14%) inset;
     }
 
 @keyframes buttonanimation {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.5);
+    }
+}
+
+@keyframes diebuttonanimation {
     from {
         transform: skew(-30deg) rotate(-180deg);
     }
 
     to {
-        transform: skew(30deg) rotate(180deg)
+        transform: skew(30deg) rotate(180deg);
     }
 }
 
 button span {
     display: inline-block;
+    color: #2e3240;
 }
 
 button.icon.diceroll span::before {
@@ -193,9 +202,10 @@ button.icon.hold span::before {
     content: "=";
 }
 
-button.icon.active span {
+button.icon.active span, button.icon.active:hover span {
     transform: rotate(90deg);
-    color: #bda89a;
+    color: #f2e5da;
+    text-shadow: 0 0 3px darkorange;
 }
 
 button.icon.add span::before {
@@ -207,8 +217,16 @@ button.icon.remove span::before {
 }
 
 button.icon:hover span {
-    animation-duration: 3s;
+    animation-duration: 1s;
     animation-name: buttonanimation;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    text-shadow: 0 0 3px #b8e1b8, 0 0 5px #f2e5da;
+}
+
+button.icon.diceroll:hover span {
+    animation-duration: 3s;
+    animation-name: diebuttonanimation;
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
@@ -311,24 +329,30 @@ button, a {
     position: relative;
     transform-style: preserve-3d;
     z-index: 99;
+    text-align: center;
+    font-size: 43px;
+    line-height: 70px;
 }
 
     .die .side {
+        position: absolute;
         counter-increment: sides 1;
         backface-visibility: hidden;
+        background: linear-gradient(135deg, rgba(0,0,0,0.22), rgba(200,200,200,0.25)),rgba(70, 94, 113, 0.75);
+        box-shadow: 2px 1px 1px 0 rgb(0 0 0 / 25%), 0px 0px 1px 0 rgb(200 200 200 / 20%), 0px 0px 3px 1px rgb(0 0 0 / 20%) inset;
     }
 
         .die .side:before {
             content: counter(sides);
             position: absolute;
-            top: 21.5px;
-            color: #fff;
-            text-shadow: 1px 5px 25px #ad5097,0 0 100px red;
-            font-size: 43px;
-            text-align: center;
-            line-height: 70px;
-            height: 86px;
-            filter: drop-shadow(1px 1px 0 darkgrey) drop-shadow(2px 0 0 black);
+            top: 0;
+            color: #2e3240;
+            height: 100%;
+            left: 0;
+            line-height: 100px;
+            width: 100%;
+            display: inline-block;
+            font-size: 2.5rem;
         }
 
 .dietop:nth-child(4n) .die.rolling {
@@ -353,27 +377,14 @@ button, a {
 /*four sided*/
 
 .die[data-sides="4"] .side {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    max-width: 200px;
-    max-height: 200px;
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
-    border-bottom: 86px solid rgba(70, 94, 113, 0.75);
-    width: 0px;
-    height: 0px;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
+    width: 100px;
+    height: 100px;
+    clip-path: polygon(50% 15%, 0% 100%, 100% 100%);
+    -webkit-transform-origin: 50% 100%;
 }
 
     .die[data-sides="4"] .side:before {
-        font-size: 2rem;
-        line-height: 2rem;
-        top: 2.75rem;
-        left: -10px;
+        line-height: 140px;
     }
 
 .die[data-sides="4"][data-face="1"] {
@@ -411,20 +422,20 @@ button, a {
 
 /*six sided*/
 .die[data-sides="6"] {
-    position: relative;
-    -webkit-transform-style: preserve-3d;
+    /*position: relative;*/
+    /*-webkit-transform-style: preserve-3d;*/
 }
 
     .die[data-sides="6"] .side {
-        position: absolute;
+        /*position: absolute;*/
         height: 100px;
         width: 100px;
-        background-color: rgba(70, 94, 113, 0.75);
+        /*background-color: rgba(70, 94, 113, 0.75);*/
     }
 
-        .die[data-sides="6"] .side:before {
+        /*        .die[data-sides="6"] .side:before {
             width: 100px;
-        }
+        }*/
 
         .die[data-sides="6"] .side:nth-child(1) {
             -webkit-transform: scale3d(1, 1, 1) rotateX(90deg) translateZ(50px) rotate(180deg);
@@ -478,212 +489,167 @@ button, a {
 
 
 .die[data-sides="8"] .side {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    font-size: 60px;
-    text-align: center;
-    line-height: 200px;
-    max-width: 200px;
-    max-height: 200px;
-    border-left: 70px solid transparent;
-    border-right: 70px solid transparent;
-    border-bottom: 122px solid rgba(70, 94, 113, 0.75);
-    width: 0px;
-    height: 0px;
-    transform-style: preserve-3d;
-    perspective: 100px;
-    transform-style: preserve-3d;
+    width: 126px;
+    height: 100px;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    -webkit-transform-origin: 50% 100%;
 }
 
     .die[data-sides="8"] .side:before {
-        font-size: 2.5rem;
-        line-height: 90px;
-        top: 1.75rem;
-        left: -15px;
+        line-height: 125px;
     }
 
     .die[data-sides="8"] .side:nth-child(1) {
-        transform: rotateX(35.26deg) rotateY(0deg) rotateZ(0deg) translateZ(42px);
+        transform: translateZ(63px) rotateX(40deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(2) {
+        transform: rotateY(90deg) translateZ(63px) rotateX(40deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(3) {
+        transform: rotateY(180deg) translateZ(63px) rotateX(40deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(4) {
+        transform: rotateY(-90deg) translateZ(63px) rotateX(40deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(5) {
+        transform: translateZ(63px) rotateX(320deg) rotateZ(180deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(6) {
+        transform: rotateY(90deg) translateZ(63px) rotateX(320deg) rotateZ(180deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(7) {
+        transform: rotateY(180deg) translateZ(63px) rotateX(320deg) rotateZ(180deg);
+    }
+
+    .die[data-sides="8"] .side:nth-child(8) {
+        transform: rotateY(-90deg) translateZ(63px) rotateX(320deg) rotateZ(180deg);
     }
 
 .die[data-sides="8"][data-face="1"] {
-    transform: rotateX(330deg) rotateY(0deg);
-}
-
-.die[data-sides="8"] .side:nth-child(2) {
-    transform: rotateY(90deg) rotateX(35.26deg) translateZ(42px);
+    transform: rotateX(330deg) rotateY(0deg) translateY(-100px);
 }
 
 .die[data-sides="8"][data-face="2"] {
-    transform: rotateX(330deg) rotateY(270deg);
-}
-
-.die[data-sides="8"] .side:nth-child(3) {
-    transform: rotateY(180deg) rotateX(35.26deg) translateZ(42px);
+    transform: rotateX(330deg) rotateY(270deg) translateY(-100px);
 }
 
 .die[data-sides="8"][data-face="3"] {
-    transform: rotateX(330deg) rotateY(180deg);
-}
-
-.die[data-sides="8"] .side:nth-child(4) {
-    transform: rotateY(-90deg) rotateX(35.26deg) translateZ(42px);
+    transform: rotateX(330deg) rotateY(180deg) translateY(-100px);
 }
 
 .die[data-sides="8"][data-face="4"] {
-    transform: rotateX(330deg) rotateY(90deg) rotateZ(0deg);
-}
-
-.die[data-sides="8"] .side:nth-child(5) {
-    transform: rotateX(-35.26deg) rotateY(0deg) rotateZ(180deg) translateZ(71px) translateY(-42px);
+    transform: rotateX(330deg) rotateY(90deg) rotateZ(0deg) translateY(-100px);
 }
 
 .die[data-sides="8"][data-face="5"] {
     transform: rotateX(150deg) rotateY(180deg) rotateZ(0deg);
 }
 
-.die[data-sides="8"] .side:nth-child(6) {
-    transform: rotateY(90deg) rotateX(-35.26deg) rotateZ(180deg) translateZ(71px) translateY(-42px);
-}
-
 .die[data-sides="8"][data-face="6"] {
     transform: rotateX(180deg) rotateY(90deg) rotateZ(325deg);
-}
-
-.die[data-sides="8"] .side:nth-child(7) {
-    transform: rotateY(180deg) rotateX(-35.26deg) rotateZ(180deg) translateZ(71px) translateY(-42px);
 }
 
 .die[data-sides="8"][data-face="7"] {
     transform: rotateX(155deg) rotateY(0deg) rotateZ(0deg);
 }
 
-.die[data-sides="8"] .side:nth-child(8) {
-    transform: rotateY(-90deg) rotateX(-35.26deg) rotateZ(180deg) translateZ(71px) translateY(-42px);
-}
 
 .die[data-sides="8"][data-face="8"] {
-    transform: rotateX(126deg) rotateY(272deg) rotateZ(339deg);
+    transform: rotateX(129deg) rotateY(273deg) rotateZ(335deg);
 }
 
 /*10 sided*/
-.die[data-sides="10"] {
-    position: relative;
-    transform-style: preserve-3d;
+.die[data-sides="10"] .side {
+    width: 80px;
+    height: 94px;
+    clip-path: polygon(50% 0%, 100% 80%, 50% 100%, 0 80%);
 }
 
-    .die[data-sides="10"] .side {
-        position: absolute;
-        left: 50%;
-        top: 0;
-        margin: 0 -52px;
-        border-left: 52px solid transparent;
-        border-right: 52px solid transparent;
-        border-bottom: 100px solid rgba(70, 94, 113, 0.75);
-        width: 0px;
-        height: 0px;
-        transform-style: preserve-3d;
-    }
+.die[data-sides="10"][data-face="1"] {
+    transform: rotateX(-45deg) rotateY(0deg);
+}
 
-        .die[data-sides="10"] .side:before {
-            font-size: 2.5rem;
-            line-height: 40px;
-            top: 3.75rem;
-            left: -1rem;
-        }
+.die[data-sides="10"] .side:nth-child(1) {
+    transform: rotateY(0deg) translateZ(34px) translateY(6.96px) rotateX(45deg)
+}
 
-        .die[data-sides="10"] .side:after {
-            content: "";
-            position: absolute;
-            bottom: -124px;
-            left: -52px;
-            border-left: 52px solid transparent;
-            border-right: 52px solid transparent;
-            border-top: 24px solid rgba(70, 94, 113, 0.75);
-            width: 0px;
-            height: 0px;
-        }
+.die[data-sides="10"][data-face="2"] {
+    transform: rotateX(-225deg) rotateY(-72deg);
+}
 
-    .die[data-sides="10"][data-face="1"] {
-        transform: rotateX(-45deg) rotateY(0deg);
-    }
+.die[data-sides="10"] .side:nth-child(2) {
+    transform: rotateY(72deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(1) {
-        transform: rotateY(0deg) translateZ(34px) translateY(6.96px) rotateX(45deg)
-    }
+.die[data-sides="10"][data-face="3"] {
+    transform: rotateX(-45deg) rotateY(72deg);
+}
 
-    .die[data-sides="10"][data-face="2"] {
-        transform: rotateX(-225deg) rotateY(-72deg);
-    }
+.die[data-sides="10"] .side:nth-child(3) {
+    transform: rotateY(-72deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(2) {
-        transform: rotateY(72deg) translateZ(-34px) translateY(94.04px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="4"] {
+    transform: rotateX(-225deg) rotateY(-144deg);
+}
 
-    .die[data-sides="10"][data-face="3"] {
-        transform: rotateX(-45deg) rotateY(72deg);
-    }
+.die[data-sides="10"] .side:nth-child(4) {
+    transform: rotateY(144deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(3) {
-        transform: rotateY(-72deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="5"] {
+    transform: rotateX(-45deg) rotateY(144deg);
+}
 
-    .die[data-sides="10"][data-face="4"] {
-        transform: rotateX(-225deg) rotateY(-144deg);
-    }
+.die[data-sides="10"] .side:nth-child(5) {
+    transform: rotateY(-144deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(4) {
-        transform: rotateY(144deg) translateZ(-34px) translateY(94.04px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="6"] {
+    transform: rotateX(-225deg) rotateY(-216deg);
+}
 
-    .die[data-sides="10"][data-face="5"] {
-        transform: rotateX(-45deg) rotateY(144deg);
-    }
+.die[data-sides="10"] .side:nth-child(6) {
+    transform: rotateY(216deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(5) {
-        transform: rotateY(-144deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="7"] {
+    transform: rotateX(-45deg) rotateY(216deg);
+}
 
-    .die[data-sides="10"][data-face="6"] {
-        transform: rotateX(-225deg) rotateY(-216deg);
-    }
+.die[data-sides="10"] .side:nth-child(7) {
+    transform: rotateY(-216deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(6) {
-        transform: rotateY(216deg) translateZ(-34px) translateY(94.04px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="8"] {
+    transform: rotateX(-225deg) rotateY(-288deg);
+}
 
-    .die[data-sides="10"][data-face="7"] {
-        transform: rotateX(-45deg) rotateY(216deg);
-    }
+.die[data-sides="10"] .side:nth-child(8) {
+    transform: rotateY(288deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(7) {
-        transform: rotateY(-216deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="9"] {
+    transform: rotateX(-45deg) rotateY(288deg);
+}
 
-    .die[data-sides="10"][data-face="8"] {
-        transform: rotateX(-225deg) rotateY(-288deg);
-    }
+.die[data-sides="10"] .side:nth-child(9) {
+    transform: rotateY(-288deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
+}
 
-    .die[data-sides="10"] .side:nth-child(8) {
-        transform: rotateY(288deg) translateZ(-34px) translateY(94.04px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
-    }
+.die[data-sides="10"][data-face="10"] {
+    transform: rotateX(-225deg) rotateY(-360deg);
+}
 
-    .die[data-sides="10"][data-face="9"] {
-        transform: rotateX(-45deg) rotateY(288deg);
-    }
-
-    .die[data-sides="10"] .side:nth-child(9) {
-        transform: rotateY(-288deg) translateZ(34px) translateY(6.96px) rotateX(45deg);
-    }
-
-    .die[data-sides="10"][data-face="10"] {
-        transform: rotateX(-225deg) rotateY(-360deg);
-    }
-
-    .die[data-sides="10"] .side:nth-child(10) {
-        transform: rotateY(360deg) translateZ(-34px) translateY(94.04px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
-    }
+.die[data-sides="10"] .side:nth-child(10) {
+    transform: rotateY(360deg) translateZ(-34px) translateY(60px) rotateZ(180deg) rotateY(180deg) rotateX(45deg);
+}
 
 
 /*12 sided*/
@@ -715,13 +681,6 @@ button, a {
         clip-path: polygon(50% 0.5102040816%, 99.53165272% 36.49705629%, 80.6122449% 94.72500629%, 19.3877551% 94.72500629%, 0.4683472789% 36.49705629%);
         transform-origin: 50% 50%;
     }
-
-        .die[data-sides="12"] .side:before {
-            font-size: 2.5rem;
-            line-height: 40px;
-            top: 1.5rem;
-            left: 1.2rem;
-        }
 
     .die[data-sides="12"][data-face="1"] {
         transform: rotateX(267deg) rotateY(35deg) rotateZ(6deg);
@@ -829,16 +788,15 @@ button, a {
         left: 50%;
         top: 0;
         margin: 0 0px;
-        border-left: 50px solid transparent;
-        border-right: 50px solid transparent;
-        border-bottom: 86px solid rgba(70, 94, 113, 0.75);
-        width: 0px;
-        height: 0px;
+        background-color: rgba(70, 94, 113, 0.75);
+        width: 100px;
+        height: 85px;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
     }
 
+
         .die[data-sides="20"] .side:before {
-            left: -100px;
-            width: 200px;
+            width: 100px;
         }
 
         .die[data-sides="20"] .side:nth-child(1) {
@@ -846,7 +804,7 @@ button, a {
         }
 
     .die[data-sides="20"][data-face="1"] {
-        transform: rotateX(-53deg) rotateY(0deg);
+        transform: rotateX(-53deg) rotateY(0deg) translateY(-130px);
     }
 
     .die[data-sides="20"] .side:nth-child(2) {
@@ -870,7 +828,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="4"] {
-        transform: rotateX(-53deg) rotateY(216deg);
+        transform: rotateX(-53deg) rotateY(216deg) translateY(-130px);
     }
 
     .die[data-sides="20"] .side:nth-child(5) {
@@ -878,7 +836,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="5"] {
-        transform: rotateX(-53deg) rotateY(288deg);
+        transform: rotateX(-53deg) rotateY(288deg) translateY(-130px);
     }
 
     .die[data-sides="20"] .side:nth-child(6) {
@@ -926,7 +884,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="11"] {
-        transform: rotateX(11deg) rotateY(-252deg);
+        transform: rotateX(11deg) rotateY(-252deg) translateY(-120px);
     }
 
     .die[data-sides="20"] .side:nth-child(12) {
@@ -934,7 +892,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="12"] {
-        transform: rotateX(11deg) rotateY(-324deg);
+        transform: rotateX(11deg) rotateY(-324deg) translateY(-120px);
     }
 
     .die[data-sides="20"] .side:nth-child(13) {
@@ -942,7 +900,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="13"] {
-        transform: rotateX(11deg) rotateY(-396deg);
+        transform: rotateX(11deg) rotateY(-396deg) translateY(-120px);
     }
 
     .die[data-sides="20"] .side:nth-child(14) {
@@ -951,7 +909,7 @@ button, a {
 
 
     .die[data-sides="20"][data-face="14"] {
-        transform: rotateX(11deg) rotateY(-468deg);
+        transform: rotateX(11deg) rotateY(-468deg) translateY(-110px);
     }
 
 
@@ -960,7 +918,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="15"] {
-        transform: rotateX(11deg) rotateY(-540deg);
+        transform: rotateX(11deg) rotateY(-540deg) translateY(-110px);
     }
 
 
@@ -993,7 +951,7 @@ button, a {
     }
 
     .die[data-sides="20"][data-face="19"] {
-        transform: rotateX(127deg) rotateY(-288deg);
+        transform: rotateX(127deg) rotateY(-288deg) translateY(100px);
     }
 
     .die[data-sides="20"] .side:nth-child(20) {
@@ -1017,17 +975,17 @@ button, a {
     }
 
     80% {
-        transform: rotateX(-360deg) rotateY(720deg) rotateZ(-360deg)
+        transform: rotateX(-360deg) rotateY(20deg) rotateZ(-160deg)
     }
 }
 
 @keyframes roll-1 {
-    0% {
-        transform: rotateX(0deg) rotateY(0deg);
+    20% {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
     }
 
-    40% {
-        transform: rotateX(-160deg) rotateY(790deg) rotateZ(0deg)
+    50% {
+        transform: rotateX(-160deg) rotateY(390deg) rotateZ(0deg)
     }
 
 
@@ -1037,11 +995,11 @@ button, a {
 }
 
 @keyframes roll-2 {
-    0% {
+    20% {
         transform: rotateX(0deg) rotateY(0deg);
     }
 
-    40% {
+    50% {
         transform: rotateX(50deg) rotateY(120deg) rotateZ(0deg)
     }
 
@@ -1051,10 +1009,6 @@ button, a {
 }
 
 @keyframes roll-3 {
-    0% {
-        transform: rotateX(0deg) rotateY(0deg);
-    }
-
     20% {
         transform: rotateX(240deg) rotateY(70deg) rotateZ(240deg)
     }
@@ -1064,7 +1018,7 @@ button, a {
     }
 
     65% {
-        transform: rotateX(270deg) rotateY(320deg) rotateZ(990deg)
+        transform: rotateX(270deg) rotateY(320deg) rotateZ(190deg)
     }
 
     80% {
