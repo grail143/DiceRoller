@@ -15,6 +15,11 @@ class DiceArrayController {
             this.totals[sides] = die.value;
         }
         this.diceList.push(die);
+        die.DOMC = new DOMController(die);
+        die.DOMC.addDieToContainer();
+        die.DOMC.addDieToDieList();
+        die.DOMC.addDieToAlphList();
+        die.DOMC.updateDataSets(die);
     }
 
 
@@ -25,7 +30,7 @@ class DiceArrayController {
         }
         const undie = this.diceList[undieIndex];
         undie.removeDieFromLists();
-        undie.removeDieFromContainer();
+        undie.DOMC.removeDieFromContainer();
         this.diceList.splice(undieIndex, 1);
         for (let i = undieIndex; i < this.diceList.length; i++) {
             this.diceList[i].index = i + 1;
@@ -62,10 +67,10 @@ class DiceController {
         this.sides = sides;
         this.value = 1;
         this.index = index;
-        this.dieTop = null;
         this.hold = false;
         this.total = 0;
         this.name = '';
+        this.DOMC = null;
         this.buttonConfigs = [
             {
                 className: 'diceroll icon',
@@ -104,8 +109,8 @@ class DiceController {
         this.name = abc + ' (d' + this.sides + ')';
     }
     animateRoll() {
-        const dieElement = this.dieTop.querySelector('.die');
-        const rollButton = this.dieTop.querySelector('.icon.diceroll');
+        const dieElement = this.DOMC.dieTop.querySelector('.die');
+        const rollButton = this.DOMC.dieTop.querySelector('.icon.diceroll');
         dieElement.classList.add("rolling");
         rollButton.classList.add("active");
         const dicelistcontainer = document.querySelector('.dicelist');
@@ -123,7 +128,7 @@ class DiceController {
                 let liButton = li.querySelector('.icon.diceroll');
                 liButton.classList.remove("active");
             });
-            this.updateDataSets();
+            this.DOMC.updateDataSets(this);
         }, 3000);
         return this.value;
     }
@@ -142,7 +147,7 @@ class DiceController {
         return buttonDiv;
     }
     holdDie() {
-        const hold1 = this.dieTop.querySelector('.hold.icon');
+        const hold1 = this.DOMC.dieTop.querySelector('.hold.icon');
         const dicelistcontainer = document.querySelector('.dicelist');
         const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"] .hold.icon`);
 
@@ -165,30 +170,7 @@ class DiceController {
     }
     addDie() {
         this.nameDie();
-        this.addDieToContainer();
-        this.addDieToDieList();
-        this.addDieToAlphList();
-        this.updateDataSets();
         return this;
-    }
-    updateDataSets() {
-        const dieElement = this.dieTop.querySelector('.die');
-        dieElement.dataset.sides = this.sides;
-        dieElement.dataset.face = this.value;
-        const dicelistcontainer = document.querySelector('.dicelist');
-        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
-        dicelist.forEach((li) => {
-            li.dataset.index = this.index;
-            li.querySelector('span.name').textContent = `${this.name} : ${this.value}`;
-        });
-        this.dieTop.dataset.face = this.value;
-        this.dieTop.dataset.index = this.index;
-        this.dieTop.querySelector('h4').textContent = `${this.name} : ${this.value}`;
-        const diceList = diceArray.diceList.filter(die => die.sides === this.sides);
-        this.total = diceList.reduce((acc, cur) => acc + cur.value, 0);
-        const totalElement = document.querySelector(`div#type${this.sides}d h4`);
-        if (this.total)
-            totalElement.textContent = `D${this.sides}: ${this.total}`;
     }
     addDieTopHeader() {
         const dieHeader = document.createElement('div');
@@ -199,28 +181,6 @@ class DiceController {
         const buttonDiv = this.createButtons();
         dieHeader.appendChild(buttonDiv);
         return dieHeader;
-    }
-    addDieToContainer() {
-        const diceContainer = document.querySelector('.dice-container');
-        this.dieTop = document.createElement("div");
-        const dieHeader = this.addDieTopHeader();
-        this.dieTop.appendChild(dieHeader);
-        const dieElement = document.createElement('div');
-
-        this.dieTop.classList.add("dietop");
-        dieElement.classList.add('die');
-
-        for (let i = 0; i < this.sides; i++) {
-            let side = document.createElement("div");
-            side.className = "side";
-            dieElement.appendChild(side);
-        }
-        this.dieTop.appendChild(dieElement);
-        diceContainer.appendChild(this.dieTop);
-    }
-    removeDieFromContainer() {
-        const diceContainer = document.getElementById("dice");
-        diceContainer.removeChild(this.dieTop);
     }
     addDieToDieList() {
         const listId = `type${this.sides}d`;
@@ -263,7 +223,133 @@ class DiceController {
     }
 
 }
+class DOMController {
+    constructor(die) {
+        this.dieTop = null;
+        this.sides = die.sides;
+        this.index = die.index;
+        this.value = die.value;
+        this.name = die.name;
+        this.dieTopTemp = ``;
+        this.listItemTemp = `
+                    <span class="name">${this.name}: ${this.value}</span>
+            `;
+        this.buttonConfigs = [
+            {
+                className: 'diceroll icon',
+                title: 'roll',
+                clickHandler: () => {
+                    die.animateRoll();
+                }
+            },
+            {
+                className: 'hold icon',
+                title: 'hold',
+                clickHandler: () => {
+                    die.holdDie();
+                }
+            },
+            {
+                className: 'remove icon',
+                title: 'remove',
+                clickHandler: () => {
+                    diceArray.remove(this.index);
+                }
+            }
+        ];
+    }
+    createButtons() {
+        const buttonDiv = document.createElement('div');
+        for (const config of this.buttonConfigs) {
+            const button = document.createElement('button');
+            button.classList = config.className;
+            button.title = config.title;
+            const span = document.createElement('span');
+            button.appendChild(span);
+            button.addEventListener('click', config.clickHandler);
+            buttonDiv.appendChild(button);
+        }
+        buttonDiv.classList.add('controlbuttons');
+        return buttonDiv;
+    }
+    createListItem() {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = this.listItemTemp;
+        listItem.dataset.name = this.name;
+        listItem.dataset.index = this.index;
+        const buttonDiv = this.createButtons();
+        listItem.append(buttonDiv);
+        return listItem;
+    }
+    updateListItems() {
+        const dicelistcontainer = document.querySelector('.dicelist');
+        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
+        dicelist.forEach((li) => {
+            li.dataset.index = this.index;
+            li.querySelector('span.name').textContent = `${this.name} : ${this.value}`;
+        });
+    }
+    addDieToDieList() {
+        const listId = `type${this.sides}d`;
+        const list = document.querySelector(`#${listId} .list`);
+        this.dieListItem = this.createListItem();
+        list.appendChild(this.dieListItem);
 
+    }
+    addDieToAlphList() {
+        const listId = `alphabetical`;
+        const list = document.querySelector(`#${listId}`);
+        this.dieListItem = this.createListItem();
+        list.appendChild(this.dieListItem);
+
+    }
+    addDieToContainer() {
+        const diceContainer = document.querySelector('.dice-container');
+        const sideDivs = [];
+        for (let i = 0; i < this.sides; i++) {
+            sideDivs.push(`<div class="side"></div>`);
+        }
+        this.dieTopTemp = `
+              <div class="dietop" data-face="${this.value}" data-index="${this.index}">
+                <div class="dieheader">
+                  <h4>${this.name}: ${this.value}</h4>
+                </div>
+                <div class="die" data-sides="${this.sides}" data-face="${this.value}">${sideDivs.join('')}</div>
+              </div>
+            `;
+        this.dieTop = document.createElement('div');
+        this.dieTop.innerHTML = this.dieTopTemp;
+        const buttonDiv = this.createButtons();
+        const dieHeader = this.dieTop.querySelector('.dieheader');
+        dieHeader.appendChild(buttonDiv);
+
+        diceContainer.appendChild(this.dieTop);
+
+    }
+    updateContainerItem() {
+        const dicecontainer = document.querySelector('.dice-container');
+        const dieTop = dicecontainer.querySelector(`.dietop[data-index="${this.index}"]`);
+        dieTop.dataset.face = this.value;
+        dieTop.dataset.index = this.index;
+        dieTop.querySelector('h4').textContent = `${this.name} : ${this.value}`;
+        dieTop.querySelector('.die').dataset.face = this.value;
+    }
+    removeDieFromContainer() {
+        const diceContainer = document.getElementById("dice");
+        diceContainer.removeChild(this.dieTop);
+    }
+    updateDataSets(die) {
+        this.value = die.value;
+        this.index = die.index;
+        this.updateListItems();
+        this.updateContainerItem();
+        const diceList = diceArray.diceList.filter(die => die.sides === this.sides);
+        this.total = diceList.reduce((acc, cur) => acc + cur.value, 0);
+        const totalElement = document.querySelector(`div#type${this.sides}d h4`);
+        if (this.total)
+            totalElement.textContent = `D${this.sides}: ${this.total}`;
+    }
+}
 const diceArray = new DiceArrayController;
 const addButtonElements = document.querySelectorAll('.add');
 addButtonElements.forEach(button => {
