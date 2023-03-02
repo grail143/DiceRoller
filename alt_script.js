@@ -23,18 +23,15 @@ class DiceArrayController {
     }
 
 
-    remove(index) {
-        const undieIndex = this.diceList.findIndex(die => die.index === index);
+    remove(name) {
+        const undieIndex = this.diceList.findIndex(die => die.name === name);
         if (undieIndex === -1) {
             return;
         }
         const undie = this.diceList[undieIndex];
-        undie.removeDieFromLists();
+        undie.DOMC.removeDieFromLists();
         undie.DOMC.removeDieFromContainer();
         this.diceList.splice(undieIndex, 1);
-        for (let i = undieIndex; i < this.diceList.length; i++) {
-            this.diceList[i].index = i + 1;
-        }
         if (this.totals[undie.sides]) {
             this.totals[undie.sides] -= undie.value;
         }
@@ -71,29 +68,6 @@ class DiceController {
         this.total = 0;
         this.name = '';
         this.DOMC = null;
-        this.buttonConfigs = [
-            {
-                className: 'diceroll icon',
-                title: 'roll',
-                clickHandler: () => {
-                    this.animateRoll();
-                }
-            },
-            {
-                className: 'hold icon',
-                title: 'hold',
-                clickHandler: () => {
-                    this.holdDie();
-                }
-            },
-            {
-                className: 'remove icon',
-                title: 'remove',
-                clickHandler: () => {
-                    diceArray.remove(this.index);
-                }
-            }
-        ];
     }
     nameDie() {
         let abc = '';
@@ -132,20 +106,6 @@ class DiceController {
         }, 3000);
         return this.value;
     }
-    createButtons() {
-        const buttonDiv = document.createElement('div');
-        for (const config of this.buttonConfigs) {
-            const button = document.createElement('button');
-            button.classList = config.className;
-            button.title = config.title;
-            const span = document.createElement('span');
-            button.appendChild(span);
-            button.addEventListener('click', config.clickHandler);
-            buttonDiv.appendChild(button);
-        }
-        buttonDiv.classList.add('controlbuttons');
-        return buttonDiv;
-    }
     holdDie() {
         const hold1 = this.DOMC.dieTop.querySelector('.hold.icon');
         const dicelistcontainer = document.querySelector('.dicelist');
@@ -171,55 +131,6 @@ class DiceController {
     addDie() {
         this.nameDie();
         return this;
-    }
-    addDieTopHeader() {
-        const dieHeader = document.createElement('div');
-        const dieH4 = document.createElement('h4');
-        dieH4.textContent = `${this.name}: ${this.total}`;
-        dieHeader.classList.add("dieheader");
-        dieHeader.appendChild(dieH4);
-        const buttonDiv = this.createButtons();
-        dieHeader.appendChild(buttonDiv);
-        return dieHeader;
-    }
-    addDieToDieList() {
-        const listId = `type${this.sides}d`;
-        const list = document.querySelector(`#${listId} .list`);
-        let listItem = document.createElement('li');
-
-        const dieValueSpan = document.createElement('span');
-        dieValueSpan.textContent = `${this.value}`;
-        dieValueSpan.classList.add('name');
-        listItem.dataset.name = this.name;
-        listItem.appendChild(dieValueSpan);
-
-        const buttonDiv = this.createButtons();
-        listItem.appendChild(buttonDiv);
-        list.appendChild(listItem);
-    }
-    addDieToAlphList() {
-        const listId = `alphabetical`;
-        const list = document.querySelector(`#${listId}`);
-        let listItem = document.createElement('li');
-
-        const dieValueSpan = document.createElement('span');
-        dieValueSpan.textContent = `${this.value}`;
-        dieValueSpan.classList.add('name');
-        listItem.appendChild(dieValueSpan);
-        listItem.dataset.name = this.name;
-
-        const buttonDiv = this.createButtons();
-        listItem.appendChild(buttonDiv);
-
-        list.appendChild(listItem);
-    }
-    removeDieFromLists() {
-
-        const dicelistcontainer = document.querySelector('.dicelist');
-        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
-        dicelist.forEach((li) => {
-            li.parentNode.removeChild(li);
-        });
     }
 
 }
@@ -253,7 +164,7 @@ class DOMController {
                 className: 'remove icon',
                 title: 'remove',
                 clickHandler: () => {
-                    diceArray.remove(this.index);
+                    diceArray.remove(this.name);
                 }
             }
         ];
@@ -302,6 +213,14 @@ class DOMController {
         this.dieListItem = this.createListItem();
         list.appendChild(this.dieListItem);
 
+    }
+    removeDieFromLists() {
+
+        const dicelistcontainer = document.querySelector('.dicelist');
+        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
+        dicelist.forEach((li) => {
+            li.parentNode.removeChild(li);
+        });
     }
     addDieToContainer() {
         const diceContainer = document.querySelector('.dice-container');
