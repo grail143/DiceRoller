@@ -360,22 +360,23 @@ button, a {
             font-size: 2.5rem;
         }
 
-.dietop:nth-child(4n) .die.rolling {
+
+.playfield div:nth-child(4n) .dietop .die.rolling {
     -webkit-animation: roll 3s linear;
     animation: roll 3s linear;
 }
 
-.dietop:nth-child(4n+1) .die.rolling {
+.playfield div:nth-child(4n+1) .dietop .die.rolling {
     -webkit-animation: roll-1 3s linear;
     animation: roll-1 3s linear;
 }
 
-.dietop:nth-child(4n+2) .die.rolling {
+.playfield div:nth-child(4n+2) .dietop .die.rolling {
     -webkit-animation: roll-2 3s linear;
     animation: roll-2 3s linear;
 }
 
-.dietop:nth-child(4n+3) .die.rolling {
+.playfield div:nth-child(4n+3) .dietop .die.rolling {
     -webkit-animation: roll-3 3s linear;
     animation: roll-3 3s linear;
 }
