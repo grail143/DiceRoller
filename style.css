@@ -24,15 +24,19 @@ body, .playfield, .menu {
     display: none;
     margin-top: 1em;
 }
+
 div.typeheader {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
-div.typeheader h4 {
-    margin: 5px 40px 0 20px;
-    font-size: 1.2rem;
-}
+
+    div.typeheader h4 {
+        width:40%;
+        margin: 5px 0px 0 20px;
+        font-size: 1.2rem;
+    }
+
 div.type ul.list {
     border-bottom: 1px solid #75808A;
     padding: 20px 20px 20px 30px;
@@ -360,6 +364,11 @@ button, a {
             font-size: 2.5rem;
         }
 
+h3 {
+    text-align: center;
+    font-size: 4rem;
+    margin: 1rem
+}
 
 .playfield div:nth-child(4n) .dietop .die.rolling {
     -webkit-animation: roll 3s linear;

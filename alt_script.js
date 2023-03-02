@@ -2,18 +2,38 @@ class DiceArrayController {
     constructor() {
         this.diceList = [];
         this.nextIndex = 1;
-        this.totals = {};
+        this.totals = {
+            'all': 0,
+            '4d': 0,
+            '6d': 0,
+            '8d': 0,
+            '10d': 0,
+            '12d': 0,
+            '20d': 0
+        };
+    }
+    updateTotals() {
+        for (const key in this.totals) {
+            this.totals[key] = 0;
+        }
+        this.diceList.forEach((die) => {
+            this.totals.all += die.value;
+            this.totals[`${die.sides}d`] += die.value;
+        });
+        const dicetypeheaders = document.querySelectorAll(`.type`);
+        dicetypeheaders.forEach((header) => {
+            const type = header.id.slice(4);
+            const h = header.querySelector('h4');
+            h.textContent = `${type}: ${this.totals[type]}`;
+        });
+        const totalanswer = document.getElementById('answer');
+        totalanswer.textContent = this.totals['all'];
     }
 
     add(sides) {
         const die = new DiceController(sides);
         die.index = this.nextIndex++;
         die.addDie();
-        if (this.totals[sides]) {
-            this.totals[sides] += die.value;
-        } else {
-            this.totals[sides] = die.value;
-        }
         this.diceList.push(die);
         die.DOMC = new DOMController(die);
         die.DOMC.addDieToContainer();
@@ -32,9 +52,7 @@ class DiceArrayController {
         undie.DOMC.removeDieFromLists();
         undie.DOMC.removeDieFromContainer();
         this.diceList.splice(undieIndex, 1);
-        if (this.totals[undie.sides]) {
-            this.totals[undie.sides] -= undie.value;
-        }
+        this.updateTotals();
     }
 
 
@@ -52,11 +70,6 @@ class DiceArrayController {
                 }, 3000);
         });
     }
-
-
-    getTotal(sides) {
-        return this.totals[sides] || 0;
-    }
 }
 
 class DiceController {
@@ -65,7 +78,6 @@ class DiceController {
         this.value = 1;
         this.index = index;
         this.hold = false;
-        this.total = 0;
         this.name = '';
         this.DOMC = null;
     }
@@ -83,6 +95,7 @@ class DiceController {
         this.name = abc + ' (d' + this.sides + ')';
     }
     animateRoll() {
+        this.DOMC.waitForValues();
         const dieElement = this.DOMC.dieTop.querySelector('.die');
         const rollButton = this.DOMC.dieTop.querySelector('.icon.diceroll');
         dieElement.classList.add("rolling");
@@ -257,16 +270,29 @@ class DOMController {
         const diceContainer = document.getElementById("dice");
         diceContainer.removeChild(this.dieTop);
     }
+    waitForValues() {
+        const type = `${this.sides}d`;
+        const header = document.querySelector(`#type${type}`);
+        const h = header.querySelector('h4');
+        h.textContent = `${type}: --`;
+        const totalanswer = document.getElementById('answer');
+        totalanswer.textContent = '--';
+        const dicecontainer = document.querySelector('.dice-container');
+        const dieTop = dicecontainer.querySelector(`.dietop[data-index="${this.index}"]`);
+        dieTop.querySelector('h4').textContent = `${this.name} : --`;
+        const dicelistcontainer = document.querySelector('.dicelist');
+        const dicelist = dicelistcontainer.querySelectorAll(`[data-name="${this.name}"]`);
+        dicelist.forEach((li) => {
+            li.dataset.index = this.index;
+            li.querySelector('span.name').textContent = `${this.name} : --`;
+        });
+    }
     updateDataSets(die) {
         this.value = die.value;
         this.index = die.index;
         this.updateListItems();
         this.updateContainerItem();
-        const diceList = diceArray.diceList.filter(die => die.sides === this.sides);
-        this.total = diceList.reduce((acc, cur) => acc + cur.value, 0);
-        const totalElement = document.querySelector(`div#type${this.sides}d h4`);
-        if (this.total)
-            totalElement.textContent = `D${this.sides}: ${this.total}`;
+        diceArray.updateTotals();
     }
 }
 const diceArray = new DiceArrayController;
